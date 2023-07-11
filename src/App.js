@@ -1,23 +1,29 @@
-import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+import { useState } from 'react';
+import Search from './components/Search';
+import Display from './components/Display';
+import Error from './components/Error';
+import {Routes, Route, Link, useNavigate} from 'react-router-dom';
 
 function App() {
+
+  const [starWarsInfo, setSWInfo] = useState({})
+  const navigate = useNavigate();
+
+  const saveInfo = (info) => {
+    setSWInfo(info)
+    const {type, id} = info;
+    navigate(`/${type}/${id}/`)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Routes>
+        <Route path='/' element={<Search getInfo={saveInfo} />} />
+        <Route path='/:item/:index/' element={<Display info={starWarsInfo} />} />
+        <Route path='/error' element={<Error/>} />
+      </Routes>
     </div>
   );
 }
