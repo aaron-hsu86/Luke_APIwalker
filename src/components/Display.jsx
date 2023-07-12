@@ -18,7 +18,7 @@ const Display = () => {
         console.log(`item: ${item}, index: ${index}`)
         axios.get(`https://swapi.dev/api/${item}/${index}`).then(response => {
             setInfo(response.data)
-            if (item == "people"){checkHomeworld(response.data.homeworld)}
+            if (item === "people"){checkHomeworld(response.data.homeworld)}
         }).catch(err => {
             console.log(err)
             navigate('/error')
@@ -36,13 +36,20 @@ const Display = () => {
         })
     }
 
-    useEffect(() =>{
-        getSWInfo()
-    }, [item, index])
+    useEffect(() =>{getSWInfo()}, [item, index])
 
     return (
         <div>
-            {item == "people" ?
+            {
+            item === "planets"?
+                <>
+                    <h1>{info.name}</h1>
+                    <p>Climate: {info.climate} </p>
+                    <p>Terrain: {info.terrain} </p>
+                    <p>Surface Water: {info.surface_water > 0 ? 'true' : 'false'} </p>
+                    <p>Population: {info.population} </p>
+                </>
+            :item === "people"?
                 <>
                     <h1>{info.name}</h1>
                     <p>Height: {info.height} </p>
@@ -52,15 +59,7 @@ const Display = () => {
                     <Link to={`${homeworld.link}`}>Homeworld: {homeworld.name}</Link>
                     <br/>
                 </>
-            :item=="planets"?
-                <>
-                    <h1>{info.name}</h1>
-                    <p>Climate: {info.climate} </p>
-                    <p>Terrain: {info.terrain} </p>
-                    <p>Surface Water: {info.surface_water > 0 ? 'true' : 'false'} </p>
-                    <p>Population: {info.population} </p>
-                </>
-            :item=="starships"?
+            :item === "starships"?
                 <>
                     <h1>{info.name}</h1>
                     <p>Model: {info.model} </p>
