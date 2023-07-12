@@ -4,7 +4,9 @@ import axios from 'axios';
 import { useParams } from "react-router";
 
 const Display = () => {
+    // main info:
     const [info, setInfo] = useState({})
+    // persons homeworld info
     const [homeworld, setHomeworld] = useState({
         name: "",
         link: ""
@@ -13,12 +15,10 @@ const Display = () => {
 
     const {item, index} = useParams();
     const getSWInfo = () => {
+        console.log(`item: ${item}, index: ${index}`)
         axios.get(`https://swapi.dev/api/${item}/${index}`).then(response => {
-            // console.log(response)
-            return response;
-        }).then(response => {
             setInfo(response.data)
-            if (response.data.homeworld){checkHomeworld(response.data.homeworld)}
+            if (item == "people"){checkHomeworld(response.data.homeworld)}
         }).catch(err => {
             console.log(err)
             navigate('/error')
@@ -27,7 +27,6 @@ const Display = () => {
 
     const checkHomeworld = (world) => {
         axios.get(world).then(response => {
-            // console.log(response.data.name)
             setHomeworld({
                 name: response.data.name,
                 link: response.data.url.substring(21)
@@ -43,9 +42,9 @@ const Display = () => {
 
     return (
         <div>
-            <h1>{info.name}</h1>
-            {info.mass ?
+            {item == "people" ?
                 <>
+                    <h1>{info.name}</h1>
                     <p>Height: {info.height} </p>
                     <p>Mass: {info.mass} </p>
                     <p>Hair Color: {info.hair_color} </p>
@@ -53,15 +52,17 @@ const Display = () => {
                     <Link to={`${homeworld.link}`}>Homeworld: {homeworld.name}</Link>
                     <br/>
                 </>
-            :info.terrain?
+            :item=="planets"?
                 <>
+                    <h1>{info.name}</h1>
                     <p>Climate: {info.climate} </p>
                     <p>Terrain: {info.terrain} </p>
                     <p>Surface Water: {info.surface_water > 0 ? 'true' : 'false'} </p>
                     <p>Population: {info.population} </p>
                 </>
-            :info.model?
+            :item=="starships"?
                 <>
+                    <h1>{info.name}</h1>
                     <p>Model: {info.model} </p>
                     <p>Manufacturer: {info.manufacturer} </p>
                     <p>Starship Class: {info.starship_class} </p>
@@ -69,7 +70,7 @@ const Display = () => {
                 </>
             :<></>
             }
-            <Link to={'/'}>Go Home</Link>
+            <Link to={'/'}>Clear</Link>
         </div>
     )
 }
